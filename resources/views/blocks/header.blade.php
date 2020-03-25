@@ -42,6 +42,16 @@
           <a href="javascript:void(0)" data-toggle="collapse" data-target="#navbar-search" aria-expanded="false">
             <i class="zmdi zmdi-hc-lg zmdi-search"></i>
           </a>
+        </li>
+        <li class="nav-item"> 
+          <a class="dropdown-item" href="{{ route('logout') }}"
+            onclick="event.preventDefault();
+                           document.getElementById('logout-form').submit();">
+            <i class="zmdi zmdi-hc-lg zmdi-power"></i>
+          </a>
+          <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+              @csrf
+          </form>
         </li>        
       </ul>
     </div>
