@@ -12,4 +12,9 @@ const mix = require('laravel-mix');
  */
 
 mix.js('resources/js/app.js', 'public/js')
-    .sass('resources/sass/app.scss', 'public/css');
+   .sass('resources/sass/app.scss', 'public/css');
+
+mix.styles([
+	'resources/css/font-awesome.css',
+	'resources/css/material-design-iconic-font.css',
+], 'public/css/fonts.css')
