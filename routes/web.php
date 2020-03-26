@@ -20,6 +20,14 @@ Auth::routes();
 Route::middleware('auth')->group(function () {
 	Route::get('administrator', 'AdministratorController@index')->name('admin.home');
 	Route::prefix('administrator')->group(function() {
-		Route::get('all', 'AdministratorController@all')->name('admin.all');
+		Route::post('all', 'AdministratorController@all')->name('admin.all');
+		Route::post('new', 'AdministratorController@new')->name('admin.new');
+		Route::post('create', 'AdministratorController@create')->name('admin.create');
+		Route::post('upload', 'AdministratorController@upload')->name('admin.upload');
+		Route::post('deleteArticle', 'AdministratorController@deleteArticle')->name('admin.deleteArticle');
+		Route::post('edit', 'AdministratorController@edit')->name('admin.edit');
+		Route::post('restore', 'AdministratorController@restore')->name('admin.restore');
+		Route::post('permaDeleteArticle', 'AdministratorController@permaDeleteArticle')->name('admin.permaDeleteArticle');
+
 	});
 });

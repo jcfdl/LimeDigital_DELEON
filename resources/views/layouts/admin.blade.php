@@ -7,11 +7,12 @@
 	@include('blocks.header')	
 	<main id="app-main" class="app-main">
 		<div class="wrap">
-			<section class="app-content">
+			<section id="load-app" class="app-content">
 				@yield('content')				
 			</section>
+			<div class="load-icon"></div>
 		</div>
-	</main>
+	</main>	
 	@include('blocks.footer')
 	@yield('scripts')
 </body>

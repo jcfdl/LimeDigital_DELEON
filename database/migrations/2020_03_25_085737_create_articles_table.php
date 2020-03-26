@@ -20,7 +20,7 @@ class CreateArticlesTable extends Migration
             $table->string('title', 100);
             $table->longText('body')->nullable();
             $table->boolean('status');
-            $table->integer('views');
+            $table->integer('views')->default(0);
             $table->integer('updated_by')->nullable();            
             $table->softDeletes('deleted_at', 0);
             $table->timestamps();

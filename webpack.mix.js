@@ -17,4 +17,12 @@ mix.js('resources/js/app.js', 'public/js')
 mix.styles([
 	'resources/css/font-awesome.css',
 	'resources/css/material-design-iconic-font.css',
-], 'public/css/fonts.css')
+], 'public/css/fonts.css');
+
+mix.styles([	
+	'resources/css/custom.css',
+], 'public/css/custom.css')
+
+mix.scripts([
+	'resources/js/custom.js',
+], 'public/js/custom.js');

@@ -65,7 +65,7 @@
     <div class="media">
       <div class="media-left">
         <div class="avatar avatar-md avatar-circle">
-          <a href="javascript:void(0)"><img class="img-responsive" src="https://place-hold.it/283x283" alt="avatar"/></a>
+          <a href="javascript:void(0)"><img class="img-responsive" src="http://place-hold.it/283x283" alt="avatar"/></a>
         </div><!-- .avatar -->
       </div>
       <div class="media-body">
@@ -121,8 +121,8 @@
             <i class="menu-caret zmdi zmdi-hc-sm zmdi-chevron-right"></i>
           </a>
           <ul class="submenu">
-            <li><a href="#"><span class="menu-text">View All</span></a></li>
-            <li><a href="#"><span class="menu-text">Add New</span></a></li>
+            <li><a href="#" class="show-page" data-page="all"><span class="menu-text">View All</span></a></li>
+            <li><a href="#" class="show-page" data-page="new"><span class="menu-text">Add New</span></a></li>
             <li><a href="#"><span class="menu-text">Media</span></a></li>
             <li><a href="#"><span class="menu-text">Categories</span></a></li>
           </ul>
