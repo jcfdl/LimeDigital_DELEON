@@ -28,6 +28,9 @@ Route::middleware('auth')->group(function () {
 		Route::post('edit', 'AdministratorController@edit')->name('admin.edit');
 		Route::post('restore', 'AdministratorController@restore')->name('admin.restore');
 		Route::post('permaDeleteArticle', 'AdministratorController@permaDeleteArticle')->name('admin.permaDeleteArticle');
-
+		Route::post('media', 'AdministratorController@media')->name('admin.media');
+		Route::post('uploadMedia', 'AdministratorController@uploadMedia')->name('admin.uploadMedia');
+		Route::post('deleteMedia', 'AdministratorController@deleteMedia')->name('admin.deleteMedia');
+		
 	});
 });

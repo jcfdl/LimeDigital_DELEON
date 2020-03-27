@@ -30,7 +30,7 @@
 				</div>				
 				<div class="col-md-4 mb-2">
 					<div class="input-group">
-						{!! Form::text(null, session('search'), ['id'=>'search', 'class'=>'form-control', 'placeholder'=>'Search...']) !!}
+						{!! Form::text(null, session('all_search'), ['id'=>'search', 'class'=>'form-control', 'placeholder'=>'Search...']) !!}
 						<span class="input-group-btn">
 			        <button class="btn btn-success advsearch" type="button" data-page="all"><i class="fa fa-search"></i></button>			        
 			        <button class="btn btn-dark advsearch-clear" data-page="all" type="button"><i class="fa fa-times"></i></button>
@@ -38,7 +38,7 @@
 					</div>
 				</div>
 				<div class="col-md-2 mb-2">					
-					{!! Form::select(null, ['live'=>'Live','trashed'=>'Trashed'], session('status'), ['class'=>'form-control advsearch-select', 'data-page'=>'all', 'id'=>'status']) !!}
+					{!! Form::select(null, ['live'=>'Live','trashed'=>'Trashed'], session('all_status'), ['class'=>'form-control advsearch-select', 'data-page'=>'all', 'id'=>'status']) !!}
 				</div>
 				<div class="col-md-12">
 					<section class="load-data">

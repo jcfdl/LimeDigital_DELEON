@@ -64,12 +64,17 @@ $(function() {
 
 	$('body').on('submit', '.form-page', function(e) {
 		e.preventDefault();
-		showIcon();
+		showIcon();		
+		var formData = new FormData(this);
 		$.ajax({
 			method: 'POST',
+			processData: false,
+			contentType: false,
+      cache: false,
 			url: $(this).attr('action'),
-			data: $(this).serialize(),
+			data: formData,
 			success: function(data) {
+				$section.empty();
 				$section.html(data);
 				hideIcon();
 			}
@@ -80,7 +85,7 @@ $(function() {
     e.preventDefault();
     showIcon();
     var url = $(this).attr('href');
-    window.history.pushState("", "", url);
+    // window.history.pushState("", "", url);
     $.ajax({
 			headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
     	method: 'POST',
@@ -107,17 +112,25 @@ $(function() {
   	$('#search').val('');
   	$('#status').val('live');
   	var page = $(this).attr('data-page');
-  	advsearch(page);
+  	advsearch(page, clear = 1);
   })
 
-	function advsearch(page) {
+  $('body').on('click', '.upload_media', function() {
+  	$('#upload_media').toggle(100);
+  })
+
+	function advsearch(page, clear = null) {
 		var search = $('#search').val();
 		var status = $('#status').val();
+		var data = {};
+		data[page + '_search'] = search;
+		data[page + '_status'] = status;
+		data['clear'] = clear;
 		showIcon();		
 		$.ajax({
 			headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
 			method: 'POST',
-			data: {search:search, status:status},
+			data: data,
 			url: '/administrator/' + page,
 			success: function(data) {
       	$('.load-data').html(data);

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 
 use App\Media;
 use App\Category;
@@ -17,8 +18,8 @@ class AdministratorController extends Controller
 
 	public function all(Request $request) {
 		session($request->except('page'));
-		$search = session('search');
-		$status = session('status');
+		$search = session('all_search');
+		$status = session('all_status');
 		$articles = Article::
 									when($status, function($query) use ($status) {
 										if($status == 'trashed') {
@@ -30,10 +31,29 @@ class AdministratorController extends Controller
 									})
 									->paginate(1);
 		$articles->withPath('/administrator/all');
-		if($request->page || $request->status || $request->search || $request->clear) {
+		if($request->page || $request->all_status || $request->all_search || $request->clear) {
     	return view('admin.load_articles', compact('articles'));
     }
 		return view('admin.all', compact('articles'));
+	}
+
+	public function media(Request $request) {	
+		session($request->except('page'));			
+		$search = session('media_search');
+		$medias = Media::
+									when($search, function($query) use ($search) {
+										return $query->where('name', 'LIKE', '%'.$search.'%');
+									})
+									->paginate(20);
+		$medias->withPath('/administrator/media');
+		if($request->page || $request->media_search || $request->clear) {
+    	return view('admin.load_media', compact('medias'));
+    }
+		return view('admin.media', compact('medias'));
+	}
+
+	public function category() {
+
 	}
 
 	public function new() {
@@ -90,24 +110,64 @@ class AdministratorController extends Controller
 		return view('admin.edit', compact('article', 'categories'));
 	}
 
-	public function category() {
-
-	}
-
 	public function upload(Request $request) {
 		$input = array();
-		$request->validate([
-      'file' => 'required|mimes:jpg,png,gif,mp4',
-    ]); 
 
-		$fileName = 'uploads/'.time().'-'.$request->file->getClientOriginalName().'.'.$request->file->extension();     
+		$validator = Validator::make($request->all(), [
+      'file' => 'required|mimes:jpeg,bmp,png',
+    ]);
+
+    if ($validator->fails()) {    
+     	return response('Fail', 400);
+    }		
+
+
+		$fileName = time().'.'.$request->file->extension();     
     $request->file->move(public_path('uploads'), $fileName);
 
-    $input['name'] = $fileName;
+    $input['name'] = 'uploads/'. $fileName;
+    $input['user_id'] = Auth::user()->id;
+    Media::create($input);    
+
+    return response()
+            ->json(['file_path'=>$input['name']]);
+	}
+
+	public function uploadMedia(Request $request) {
+		$input = array();
+
+		if (!$request->file('media')->isValid()) {
+			$request->session()->flash('media_fail', 'The file is not valid!');    	
+  		return $this->media(new Request());		
+  	}
+
+		$extension = strtolower($request->file('media')->extension());
+
+		if(!in_array($extension, array('jpg', 'png', 'gif', 'jpeg'))) {
+			$request->session()->flash('media_fail', 'The file is not valid type!');
+  		return $this->media(new Request());  
+  	}
+
+		$fileName = time().'.'.$extension;     
+    $request->file('media')->move(public_path('uploads'), $fileName);
+
+    $input['name'] = 'uploads/'. $fileName;
     $input['user_id'] = Auth::user()->id;
     Media::create($input);
 
-    return response()
-            ->json(['file_path'=>$fileName]);
+		$request->session()->flash('media_uploaded', 'The file was successfully uploaded!');    	
+  	return $this->media(new Request());
+    
+	}
+
+	public function deleteMedia(Request $request) {
+		$media = Media::findOrFail($request->id);
+		$filepath = public_path() . '/' . $media->name;
+		if (file_exists($filepath))
+			unlink($filepath);
+		$media->delete();
+
+		$request->session()->flash('media_deleted', 'The file was permanently deleted!');    	
+  	return $this->media(new Request());
 	}
 }

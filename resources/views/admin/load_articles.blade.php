@@ -60,5 +60,5 @@
 	</table>
 	{!! $articles->render() !!}
 @else
-	<p class="m-b-lg docs">No articles found!
+	<p class="m-b-lg docs">No articles found!</p>
 @endif

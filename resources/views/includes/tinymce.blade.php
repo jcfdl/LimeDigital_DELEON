@@ -8,6 +8,9 @@
 	  images_upload_base_path: '{{ url('uploads') }}',
 	  images_upload_url: '{{ route('admin.upload') }}',
 		automatic_uploads: true,
+		paste_data_images: false,
+		powerpaste_block_drop: true,
+		auto_focus: 'body',
 		images_upload_handler : function(blobInfo, success, failure) {
 			var xhr, formData, token;
 
