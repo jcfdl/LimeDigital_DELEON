@@ -1,7 +1,12 @@
 {
-    "/js/app.js": "/js/app.js",
-    "/css/app.css": "/css/app.css",
-    "/css/fonts.css": "/css/fonts.css",
-    "/css/custom.css": "/css/custom.css",
-    "/js/custom.js": "/js/custom.js"
+    "/js/app.js": "/js/app.js?id=abb29dc31cc5516e90c5",
+    "/css/app.css": "/css/app.css?id=7cab58508017b184d0f2",
+    "/css/fonts.css": "/css/fonts.css?id=8c6ee51d98d5fdf603e7",
+    "/css/core.app.css": "/css/core.app.css?id=7b3d6df1834f8460c854",
+    "/css/admin-custom.css": "/css/admin-custom.css?id=5e4178d4ed802cfbe6d1",
+    "/css/home-custom.css": "/css/home-custom.css?id=e7ea3f81a13f668f1f08",
+    "/js/core.app.js": "/js/core.app.js?id=23e2375ec894c7351bb2",
+    "/js/app.breakpoints.js": "/js/app.breakpoints.js?id=eef6eabf34f8ed7791a7",
+    "/js/min.app.js": "/js/min.app.js?id=e880c3efb8be74c85115",
+    "/js/admin-custom.js": "/js/admin-custom.js?id=8f832ba9ee5e5065313c"
 }

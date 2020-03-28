@@ -4,5 +4,5 @@
 <meta name="csrf-token" content="{{ csrf_token() }}" />
 <link rel="shortcut icon" sizes="196x196" href="{{ asset('images/logo.png') }}">
 <title>{{ config('app.name', 'Lime Digital Technical Exam') }}</title>
-<link rel="stylesheet" href="{{ asset('css/app.css') }}">
-<link rel="stylesheet" href="{{ asset('css/home-custom.css') }}">
+<link rel="stylesheet" href="{{ mix('css/app.css') }}">
+<link rel="stylesheet" href="{{ mix('css/home-custom.css') }}">
