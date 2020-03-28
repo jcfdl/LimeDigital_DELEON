@@ -31,7 +31,7 @@
 						@if($article->trashed())
 							{{ $article->category->name }}
 						@else
-							<a href="#" class="show-category" data-page="category" data-id="{{ $article->category->id }}">
+							<a href="#" class="edit-item" data-page="editCategory" data-id="{{ $article->category->id }}">
 								{{ $article->category->name }}
 							</a>
 						@endif

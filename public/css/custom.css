@@ -133,3 +133,6 @@
   font-size: 12px;
   display: none;
 }
+.article-description p {
+  line-height: 0.2;
+}

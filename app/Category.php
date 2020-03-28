@@ -14,4 +14,12 @@ class Category extends Model
 	];
 
 	protected $dates = ['deleted_at'];
+
+	public function user() {
+		return $this->belongsTo('App\User');
+	}
+
+	public function updatedBy() {
+		return $this->belongsTo('App\User', 'updated_by', 'id');
+	}
 }

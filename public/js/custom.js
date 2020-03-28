@@ -139,4 +139,38 @@ $(function() {
 		})
 	}
 
+	$('body').on('click', '.select-img', function() {
+  	$('#upload_media').hide(100);
+  	$('#upload_media').val('');
+
+		var $_section = $('#selectImages .load-data');
+		$_section.empty();
+		$.ajax({
+			headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+			method: 'post',
+			url: '/administrator/loadMedia',
+			dataType: 'html',
+			success: function(data) {
+				$_section.html(data);
+				$('#selectImages').modal('show');
+			}
+		})
+
+		$('#selectImages').on('click', '.use-media', function() {
+			var $_file = $(this).attr('data-name');
+			var $_id = $(this).attr('data-id');
+
+			$('#selected-img').val($_file);
+			$('#selected-media').val($_id);
+			$('#selectImages').modal('hide');
+		})
+	})
+
+  $('body').on('click', '.clear-img', function() {
+  	$('#upload_media').hide(100);
+  	$('#upload_media').val('');
+  	$('#selected-img').val('');
+		$('#selected-media').val('');
+  })
+
 })

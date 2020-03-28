@@ -13,9 +13,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-	return view('welcome');
-});
+Route::get('/', 'HomeController@index')->name('blog.home');
+Route::get('/articles', 'HomeController@articles')->name('blog.articles');
+Route::get('/articles/{id}/show', 'HomeController@show')->name('blog.show');
 Auth::routes();
 Route::middleware('auth')->group(function () {
 	Route::get('administrator', 'AdministratorController@index')->name('admin.home');
@@ -31,6 +31,16 @@ Route::middleware('auth')->group(function () {
 		Route::post('media', 'AdministratorController@media')->name('admin.media');
 		Route::post('uploadMedia', 'AdministratorController@uploadMedia')->name('admin.uploadMedia');
 		Route::post('deleteMedia', 'AdministratorController@deleteMedia')->name('admin.deleteMedia');
-		
+		Route::post('category', 'AdministratorController@category')->name('admin.category');
+		Route::post('deleteCategory', 'AdministratorController@deleteCategory')->name('admin.deleteCategory');
+		Route::post('restoreCategory', 'AdministratorController@restoreCategory')->name('admin.restoreCategory');
+		Route::post('permaDeleteCategory', 'AdministratorController@permaDeleteCategory')->name('admin.permaDeleteCategory');
+		Route::post('newCategory', 'AdministratorController@newCategory')->name('admin.newCategory');		
+		Route::post('createCategory', 'AdministratorController@createCategory')->name('admin.createCategory');
+		Route::post('editCategory', 'AdministratorController@editCategory')->name('admin.editCategory');	
+		Route::post('profile', 'UserController@profile')->name('admin.profile');
+		Route::post('saveProfile', 'UserController@saveProfile')->name('admin.saveProfile');
+		Route::post('loadMedia', 'AdministratorController@loadMedia')->name('admin.loadMedia');
+		Route::post('show', 'AdministratorController@show')->name('admin.show');
 	});
 });

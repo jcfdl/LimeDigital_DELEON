@@ -13,12 +13,11 @@
       <span class="zmdi zmdi-hc-lg zmdi-more"></span>
     </button>
 
-    <button type="button" class="navbar-toggle navbar-toggle-right collapsed" data-toggle="collapse" data-target="#navbar-search" aria-expanded="false">
-      <span class="sr-only">Toggle navigation</span>
-      <span class="zmdi zmdi-hc-lg zmdi-search"></span>
-    </button>
+    <!--<a href="">
+      <span class="fa fa-globe"></span>
+    </a>-->
 
-    <a href="../index.html" class="navbar-brand">
+    <a href="/administrator" class="navbar-brand">
       <span class="brand-icon"><i class="fa fa-gg"></i></span>
       <span class="brand-name">Infinity</span>
     </a>
@@ -38,11 +37,17 @@
       </ul>
 
       <ul class="nav navbar-toolbar navbar-toolbar-right navbar-right">
-        <li class="nav-item dropdown hidden-float">
+        <!--<li class="nav-item dropdown hidden-float">
           <a href="javascript:void(0)" data-toggle="collapse" data-target="#navbar-search" aria-expanded="false">
             <i class="zmdi zmdi-hc-lg zmdi-search"></i>
           </a>
+        </li>-->
+        <li class="nav-item">
+           <a href="{{ route('blog.home') }}">
+            <span class="fa fa-globe"></span>
+          </a>
         </li>
+       
         <li class="nav-item"> 
           <a class="dropdown-item" href="{{ route('logout') }}"
             onclick="event.preventDefault();
@@ -65,7 +70,7 @@
     <div class="media">
       <div class="media-left">
         <div class="avatar avatar-md avatar-circle">
-          <a href="javascript:void(0)"><img class="img-responsive" src="http://place-hold.it/283x283" alt="avatar"/></a>
+          <a href="javascript:void(0)"><img class="img-responsive" src="{{ Auth::user()->media ? Auth::user()->media->name : 'http://place-hold.it/283x283' }}" alt="avatar"/></a>
         </div><!-- .avatar -->
       </div>
       <div class="media-body">
@@ -77,32 +82,13 @@
                 <small>User</small>
                 <span class="caret"></span>
               </a>
-              <ul class="dropdown-menu animated flipInY">
+              <ul class="dropdown-menu animated flipInY">                
                 <li>
-                  <a class="text-color" href="/index.html">
-                    <span class="m-r-xs"><i class="fa fa-home"></i></span>
-                    <span>Home</span>
-                  </a>
-                </li>
-                <li>
-                  <a class="text-color" href="profile.html">
+                  <a class="text-color show-page" href="profile" data-page="profile">
                     <span class="m-r-xs"><i class="fa fa-user"></i></span>
                     <span>Profile</span>
                   </a>
-                </li>
-                <li>
-                  <a class="text-color" href="settings.html">
-                    <span class="m-r-xs"><i class="fa fa-gear"></i></span>
-                    <span>Settings</span>
-                  </a>
-                </li>
-                <li role="separator" class="divider"></li>
-                <li>
-                  <a class="text-color" href="logout.html">
-                    <span class="m-r-xs"><i class="fa fa-power-off"></i></span>
-                    <span>Home</span>
-                  </a>
-                </li>
+                </li>                
               </ul>
             </li>
           </ul>
@@ -114,6 +100,12 @@
   <div class="menubar-scroll">
     <div class="menubar-scroll-inner">
       <ul class="app-menu">
+        <li class="active">
+          <a href="{{ route('admin.home') }}" class="show-dashboard">
+            <i class="menu-icon zmdi zmdi-view-dashboard zmdi-hc-lg"></i>
+            <span class="menu-text">Dashboard</span>
+          </a>
+        </li>
         <li class="has-submenu open">
           <a href="javascript:void(0)" class="submenu-toggle">
             <i class="menu-icon zmdi zmdi-copy zmdi-hc-lg"></i>
@@ -124,7 +116,7 @@
             <li><a href="all" class="show-page" data-page="all"><span class="menu-text">View All</span></a></li>
             <li><a href="new" class="show-page" data-page="new"><span class="menu-text">Add New</span></a></li>
             <li><a href="media" class="show-page" data-page="media"><span class="menu-text">Media</span></a></li>
-            <li><a href="#"><span class="menu-text">Categories</span></a></li>
+            <li><a href="category" class="show-page" data-page="category"><span class="menu-text">Categories</span></a></li>
           </ul>
         </li>
       </ul><!-- .app-menu -->

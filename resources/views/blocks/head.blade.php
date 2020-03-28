@@ -7,6 +7,8 @@
 <link rel="stylesheet" href="{{ asset('css/fonts.css') }}">
 <link rel="stylesheet" href="{{ asset('css/app.min.css') }}">
 <link rel="stylesheet" href="{{ asset('css/custom.css') }}">
+<link rel="stylesheet" href="{{ asset('css/misc-pages.css') }}">
+
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:400,500,600,700,800,900,300">
 <script src="{{ asset('js/breakpoints.min.js') }}"></script>
 <script>Breakpoints()</script>

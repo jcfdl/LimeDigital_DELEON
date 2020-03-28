@@ -7,13 +7,33 @@ use Illuminate\Support\Facades\Validator;
 use App\Media;
 use App\Category;
 use App\Article;
+use App\User;
 
 use Illuminate\Http\Request;
 
 class AdministratorController extends Controller
 {
-	public function index() {
-		return view('admin.index');
+	public function index(Request $request) {
+		$view_count = Article::selectRaw('SUM(views) AS count')
+										->first();
+		$active_count = Article::selectRaw('COUNT(id) AS count')
+										->first();
+
+		$article_count = Article::withTrashed()->selectRaw('COUNT(id) AS count')
+										->first();
+		$category_count = Category::withTrashed()->selectRaw('COUNT(id) AS count')
+										->first();
+		$media_count = Media::selectRaw('COUNT(id) AS count')
+										->first();
+		$user_count = User::selectRaw('COUNT(id) AS count')
+										->first();	
+		$articles = Article::
+									orderBy('id', 'DESC')->paginate(10);
+		$articles->withPath('/administrator/all');	
+		if($request->page) {
+    	return view('admin.load_articles', compact('articles'));
+    }						
+		return view('admin.index', compact('view_count', 'active_count', 'article_count', 'category_count', 'media_count', 'user_count', 'articles'));
 	}
 
 	public function all(Request $request) {
@@ -28,8 +48,9 @@ class AdministratorController extends Controller
 									})
 									->when($search, function($query) use ($search) {
 										return $query->where('title', 'LIKE', '%'.$search.'%');
-									})
-									->paginate(1);
+									})									
+									->orderBy('id', 'DESC')
+									->paginate(10);
 		$articles->withPath('/administrator/all');
 		if($request->page || $request->all_status || $request->all_search || $request->clear) {
     	return view('admin.load_articles', compact('articles'));
@@ -44,6 +65,7 @@ class AdministratorController extends Controller
 									when($search, function($query) use ($search) {
 										return $query->where('name', 'LIKE', '%'.$search.'%');
 									})
+									->orderBy('id', 'DESC')
 									->paginate(20);
 		$medias->withPath('/administrator/media');
 		if($request->page || $request->media_search || $request->clear) {
@@ -52,13 +74,77 @@ class AdministratorController extends Controller
 		return view('admin.media', compact('medias'));
 	}
 
-	public function category() {
-
+	public function category(Request $request) {
+		session($request->except('page'));
+		$search = session('category_search');
+		$status = session('category_status');
+		$categories = Category::
+									when($status, function($query) use ($status) {
+										if($status == 'trashed') {
+											return $query->onlyTrashed();
+										} 
+									})
+									->when($search, function($query) use ($search) {
+										return $query->where('name', 'LIKE', '%'.$search.'%');
+									})
+									->orderBy('id', 'DESC')
+									->paginate(10);
+		$categories->withPath('/administrator/category');
+		if($request->page || $request->category_status || $request->category_search || $request->clear) {
+    	return view('admin.load_categories', compact('categories'));
+    }
+		return view('admin.category', compact('categories'));
 	}
 
-	public function new() {
+	public function deleteCategory(Request $request) {
+		$category = Category::findOrFail($request->id);
+		$article = Article::where('category_id', $category->id)->first();
+		if($article) {
+			$category->status = 1;
+			$category->update();
+			$request->session()->flash('category_fail', 'Cannot delete category! Delete the articles first!');
+			return $this->category(new Request());
+		}
+		$category->status = 0;
+		$category->delete();
+		$request->session()->flash('category_trashed', 'The category was moved to trash!');
+		return $this->category(new Request());
+	}	
+
+	public function restoreCategory(Request $request) {
+		$category = Category::withTrashed()->findOrFail($request->id);		
+		$category->restore();
+		$category->status = 1;
+		$category->update();
+		$request->session()->flash('category_restored', 'The category was restored!');
+		return $this->category(new Request());
+	}
+
+	public function permaDeleteCategory(Request $request) {
+		$category = Category::withTrashed()->findOrFail($request->id);
+		$category->forceDelete();
+		$request->session()->flash('category_delete', 'The category was permanently deleted!');
+		return $this->category(new Request());
+	}
+
+	public function newCategory() {
+		return view('admin.new_category');
+	}
+
+	public function new(Request $request) {
 		$categories = Category::pluck('name', 'id')->all();
-		return view('admin.new', compact('categories'));
+		$medias = Media::all();
+		return view('admin.new', compact('categories', 'medias'));
+	}
+
+	public function show(Request $request) {
+		$article = Article::findOrfail($request->id);
+		return view('admin.show', compact('article'));
+	}
+
+	public function loadMedia(Request $request) {
+		$medias = Media::orderBy('id', 'DESC')->get();
+		return view('admin.load_tinymce_media', compact('medias'));
 	}
 
 	public function create(Request $request) {
@@ -66,9 +152,34 @@ class AdministratorController extends Controller
 		$input = $request->all();
 		$input['user_id'] = Auth::user()->id;
 		$input['status'] = 1;
-		Article::create($input);
+
+		if($file = $request->file('media')) {
+    	$validator = Validator::make($request->all(), [
+    		'media' => 'nullable|mimes:jpg,jpeg,png'
+    	]);
+    	if($validator->fails()) {
+				Article::create($input);
+				$request->session()->flash('article_created', 'The article was successfully created! Check your uploaded intro image it is not uploaded');
+				return $this->all(new Request());
+    	}
+      $name = time() . $file->getClientOriginalName();
+      $file->move('uploads', $name);
+      $media = Media::create(['name'=>'/uploads/'.$name, 'user_id'=>Auth::user()->id]);
+      $input['media_id'] = $media->id;
+    }
+		Article::create($input);	
 		$request->session()->flash('article_created', 'The article was successfully created!');
-		return $this->all($request);
+		return $this->all(new Request());
+	}
+
+	public function createCategory(Request $request) {
+		// return view('admin.new');
+		$input = $request->all();
+		$input['user_id'] = Auth::user()->id;
+		$input['status'] = 1;
+		Category::create($input);
+		$request->session()->flash('category_created', 'The category was successfully created!');
+		return $this->category(new Request());
 	}
 
 	public function deleteArticle(Request $request) {
@@ -101,6 +212,25 @@ class AdministratorController extends Controller
 		if($request->update) {
 			$input = $request->all();
 			$input['updated_by'] = Auth::user()->id;
+
+			if($file = $request->file('media')) {
+	    	$validator = Validator::make($request->all(), [
+	    		'media' => 'nullable|mimes:jpg,jpeg,png'
+	    	]);
+	    	if($validator->fails()) {
+					$article->update($input);	
+					$request->session()->flash('article_updated', 'The article was successfully updated! Check your uploaded intro image it is not uploaded');
+					if($request->status == 0) {
+						return $this->deleteArticle($request);
+					}
+					return view('admin.edit', compact('article', 'categories'));
+	    	}
+	      $name = time() . $file->getClientOriginalName();
+	      $file->move('uploads', $name);
+	      $media = Media::create(['name'=>'/uploads/'.$name, 'user_id'=>Auth::user()->id]);
+	      $input['media_id'] = $media->id;
+	    }
+
 			$article->update($input);			
 			$request->session()->flash('article_updated', 'The article was successfully updated!');
 			if($request->status == 0) {
@@ -108,6 +238,22 @@ class AdministratorController extends Controller
 			}
 		}
 		return view('admin.edit', compact('article', 'categories'));
+	}
+
+	public function editCategory(Request $request) {				
+		$category = Category::findOrFail($request->id);
+
+		if($request->update) {
+			$input = $request->all();
+			$input['updated_by'] = Auth::user()->id;
+			$category->update($input);			
+			$request->session()->flash('category_updated', 'The category was successfully updated!');
+			if($request->status == 0) {
+				return $this->deleteCategory($request);
+			}
+		}
+
+		return view('admin.edit_category', compact('category'));
 	}
 
 	public function upload(Request $request) {
@@ -122,10 +268,10 @@ class AdministratorController extends Controller
     }		
 
 
-		$fileName = time().'.'.$request->file->extension();     
+		$fileName = time().'_'.$request->file->getClientOriginalName();     
     $request->file->move(public_path('uploads'), $fileName);
 
-    $input['name'] = 'uploads/'. $fileName;
+    $input['name'] = '/uploads/'. $fileName;
     $input['user_id'] = Auth::user()->id;
     Media::create($input);    
 
@@ -151,7 +297,7 @@ class AdministratorController extends Controller
 		$fileName = time().'.'.$extension;     
     $request->file('media')->move(public_path('uploads'), $fileName);
 
-    $input['name'] = 'uploads/'. $fileName;
+    $input['name'] = '/uploads/'. $fileName;
     $input['user_id'] = Auth::user()->id;
     Media::create($input);
 
